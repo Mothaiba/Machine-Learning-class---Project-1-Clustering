@@ -18,8 +18,13 @@ To extract features from these images, I tried using some methods:
 	- Use some combination of above methods, with varied weight, change images into grayscale or remain rgb
 
 After all, I decided to use combination of all above three with weights 0.3, 0.59 and 0.11 correspondingly
-For the number of clusters, to be balance, I choose k to be equals 15
+For the number of clusters, to be balance, I choose k to be equals 20
 Due to a large amount of computations, this part take a relatively long time, about 15 minutes in my computer to finish.
 
 Lastly, I composed the result into the page 'TungPM_project1_Clustering.html'.
 It contains a plot of How Error varies respects to The Number of Clusters, and 20 clusters themselves.
+
+-- Self assess:
+Cluster images is hard!
+I tried but could not make an acceptable result.
+The images, in my model, is clustered mainly by there color, the effect of their content is minor
