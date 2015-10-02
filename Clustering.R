@@ -126,10 +126,9 @@ toHTML <- function(imageFiles, clus, nclus, htmlName){
         dem = dem + 1;
       }
     }
-    write("\n", file = "abc.html", append = T, sep = "\n");
   }
   write('</div>', file = htmlName, sep = "\n", append = T);
-  write('</body> </html>', file = 'abc.html', sep = "\n", append = T);
+  write('</body> </html>', file = htmlName, sep = "\n", append = T);
   
   
 }
