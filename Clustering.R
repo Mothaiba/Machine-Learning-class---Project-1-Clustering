@@ -29,6 +29,36 @@ simplizeByDivide <- function(img, rmin, rmax, cmin, cmax, nrec){
                                 
 }
 
+simplizeByHistogram <- function(img, rmin, rmax, nrec){
+  
+  if(nrec == 1)
+    img = floor(floor(img * 255) / 32) + 1;
+  
+  histo = array(0 * 1 : 24, c(3, 8));
+  
+  for(i in rmin : rmax){
+    for(j in 1 : 64){
+      for(k in 1 : 3){
+        histo[k, img[i, j, k]] = histo[k, img[i, j, k]] + 1;
+      }
+    }
+  }
+  
+  histo = histo / (rmax - rmin + 1) / 64;
+  histo = matrix(histo, nrow = 1);
+  
+  if(nrec < 2){
+    rmid = (rmin + rmax) / 2;
+    histo = c(histo, simplizeByHistogram(img, rmin, rmid, nrec + 1),
+              simplizeByHistogram(img, rmin, rmid, nrec + 1),
+              simplizeByHistogram(img, rmid + 1, rmax, nrec + 1),
+              simplizeByHistogram(img, rmid + 1, rmax, nrec + 1)); 
+  }
+  
+  return (histo);
+  
+}
+
 simplizeByDomination <- function(img){
   img = floor(floor(img * 255) / 16);
   cnt = c(0, 0, 0, 0, 0, 0, 0);
@@ -50,6 +80,7 @@ simplizeByDomination <- function(img){
       else {cnt[7] = cnt[7] + 1}
     }  
   }
+  cnt = cnt / sum(cnt);
   return (cnt);
 }
 
@@ -110,12 +141,13 @@ imageFiles = list.files('C:/Users/Tung/Documents/images', full.names = T);
 df = data.frame();
 for (each in imageFiles){
   img = readJPEG(each);
-  df = rbind(df, c(simplizeByDomination(img) * 2,
-                   simplizeByDivide(img, 1, 64, 1, 64, 1)) );
+  df = rbind(df, c(simplizeByHistogram(img, 1, 64, 1) * 0.3,
+                   simplizeByDomination(img) * 0.59,
+                   simplizeByDivide(img, 1, 64, 1, 64, 1) * 0.11) );
 }
 
 trySomeK(df);
-nclus = 15;
+nclus = 20;
 model = kmeans(df, centers = nclus, iter.max = 20);
 clus = model$cluster;
 toHTML(imageFiles, clus, nclus, 'TungPM_project1_Clustering.html');
